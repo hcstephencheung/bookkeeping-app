@@ -61,7 +61,8 @@ var TransactionsSingleton = (function() {
     var view = {
         head: null,
         body: null,
-        container: null
+        container: null,
+        balance: null
     };
     var totalCount;
     var TRANSACTIONS_ENDPOINT;
@@ -88,6 +89,10 @@ var TransactionsSingleton = (function() {
                 data.balance += increment;
             }
         });
+
+        if (view.balance) {
+            view.balance.innerHTML = data.balance;
+        }
     };
 
     var _updateMetadata = function() {
@@ -128,13 +133,14 @@ var TransactionsSingleton = (function() {
         DataBridge.get(url, _updateData);
     };
 
-    var setContainer = function(DOMNode) {
-        view.container = DOMNode;
-    };
+    var setView = function(part, DOMNode) {
+        if (typeof view[part] === undefined) {
+            console.error('Transactions.setView : part is not defined', part);
+            return;
+        }
 
-    var setBody = function(DOMNode) {
-        view.body = DOMNode;
-    };
+        view[part] = DOMNode;
+    }
 
     var getTransactions = function() {
         return data.transactions;
@@ -149,11 +155,16 @@ var TransactionsSingleton = (function() {
     }
 
     var showView = function() {
-        if (!view.container || !view.body) {
-            console.error('Transactions.showView : body or container not set', view);
-        }
+        for (var part in view) {
+            if (view.hasOwnProperty(part)) {
+                if (view[part] === null) {
+                    console.warn('Transactions.showView : body or container not set', view);
+                    return;
+                }
 
-        view.container.classList.remove('c--loading');
+                view[part].classList.remove('c--loading');
+            }
+        }
     };
 
     var init = function(endpoint) {
@@ -170,8 +181,7 @@ var TransactionsSingleton = (function() {
             getView: getView,
 
             // setters
-            setContainer: setContainer,
-            setBody: setBody,
+            setView: setView,
 
             // misc
             showView: showView
@@ -190,11 +200,6 @@ var TransactionsSingleton = (function() {
 })();
 // ---
 // === Transactions.js ===
-
-// === Events.js ===
-// ---
-
-// 
 
 // List of Components
 // === ComponentFactory.js ===
@@ -220,10 +225,10 @@ var Components = {
             var rowEl = document.createElement('tbody');
             rowEl.innerHTML =
                 '<tr class="c-ledger__row">' +
-                '<td>' + rowData.Amount + '</td>' +
-                '<td>' + rowData.Company + '</td>' +
                 '<td>' + rowData.Date + '</td>' +
+                '<td>' + rowData.Company + '</td>' +
                 '<td>' + rowData.Ledger + '</td>' +
+                '<td>' + rowData.Amount + '</td>' +
                 '</tr>';
 
             // TODO: maybe not return firstChild, will need more cases to refactor
@@ -246,14 +251,16 @@ ComponentFactory.prototype.createComponent = function(component) {
 DataBridge.init();
 // Transactions init
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
-transactionsInstance.setContainer(document.getElementById('js-transactions'));
+transactionsInstance.setView('container', document.getElementById('js-transactions'));
+transactionsInstance.setView('head', document.getElementById('js-transactions__head'));
+transactionsInstance.setView('balance', document.getElementById('js-transactions__balance'));
 // Component init
 var componentFactory = new ComponentFactory();
 
 setTimeout(function() {
     console.log('=== Transactions ===', transactionsInstance.getTransactions());
 
-    transactionsInstance.setBody(componentFactory.createComponent({
+    transactionsInstance.setView('body', componentFactory.createComponent({
         template: 'LedgerComponent',
         container: 'js-transactions__ledger-table-body',
         data: transactionsInstance.getTransactions()

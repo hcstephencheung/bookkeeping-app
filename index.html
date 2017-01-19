@@ -13,9 +13,16 @@
 
         <main>
             <section class="c-card">
-                <table id="js-transactions" class="c-ledger c--loading">
-                    <thead hidden> </thead>
-                    <tbody id="js-transactions__ledger-table-body">
+                <table id="js-transactions" class="c-ledger">
+                    <thead id="js-transactions__head">
+                        <tr>
+                            <th> Date </th>
+                            <th> Company </th>
+                            <th> Account </th>
+                            <th id="js-transactions__balance"> Balance </th>
+                        </tr>
+                    </thead>
+                    <tbody id="js-transactions__ledger-table-body" class="c--loading">
                         <tr class="c-ledger__row">
                             <td class="c-ledger__column"> Loading... </td>
                         </tr>
