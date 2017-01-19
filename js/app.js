@@ -58,6 +58,11 @@ var TransactionsSingleton = (function() {
         transactions: [],
         balance: 0
     };
+    var view = {
+        head: null,
+        body: null,
+        container: null
+    };
     var totalCount;
     var TRANSACTIONS_ENDPOINT;
     var TRANSACTIONS_PAGE_COUNT = 1;
@@ -123,12 +128,32 @@ var TransactionsSingleton = (function() {
         DataBridge.get(url, _updateData);
     };
 
+    var setContainer = function(DOMNode) {
+        view.container = DOMNode;
+    };
+
+    var setBody = function(DOMNode) {
+        view.body = DOMNode;
+    };
+
     var getTransactions = function() {
         return data.transactions;
     };
 
     var getBalance = function() {
         return data.balance;
+    };
+
+    var getView = function() {
+        return view;
+    }
+
+    var showView = function() {
+        if (!view.container || !view.body) {
+            console.error('Transactions.showView : body or container not set', view);
+        }
+
+        view.container.classList.remove('c--loading');
     };
 
     var init = function(endpoint) {
@@ -139,8 +164,17 @@ var TransactionsSingleton = (function() {
 
         // Transactions API
         return {
+            // getters
             getTransactions: getTransactions,
-            getBalance: getBalance
+            getBalance: getBalance,
+            getView: getView,
+
+            // setters
+            setContainer: setContainer,
+            setBody: setBody,
+
+            // misc
+            showView: showView
         };
     };
 
@@ -156,6 +190,11 @@ var TransactionsSingleton = (function() {
 })();
 // ---
 // === Transactions.js ===
+
+// === Events.js ===
+// ---
+
+// 
 
 // List of Components
 // === ComponentFactory.js ===
@@ -174,19 +213,24 @@ var Components = {
             return
         }
 
+        // clear for new data
+        containerEl.innerHTML= '';
+
         data.forEach(function(rowData) {
-            var rowEl = document.createElement('div');
-            rowEl.innerHTML = 
-                '<li class="c-ledger__row">' +
-                'Amount: ' + rowData.Amount +
-                'Company: ' + rowData.Company +
-                'Date: ' + rowData.Date +
-                'Ledger: ' + rowData.Ledger +
-                '</li>';
+            var rowEl = document.createElement('tbody');
+            rowEl.innerHTML =
+                '<tr class="c-ledger__row">' +
+                '<td>' + rowData.Amount + '</td>' +
+                '<td>' + rowData.Company + '</td>' +
+                '<td>' + rowData.Date + '</td>' +
+                '<td>' + rowData.Ledger + '</td>' +
+                '</tr>';
 
             // TODO: maybe not return firstChild, will need more cases to refactor
             containerEl.appendChild(rowEl.firstChild);
         });
+
+        return containerEl;
     }
 };
 
@@ -200,15 +244,20 @@ ComponentFactory.prototype.createComponent = function(component) {
 
 // RunnerJS
 DataBridge.init();
+// Transactions init
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
+transactionsInstance.setContainer(document.getElementById('js-transactions'));
+// Component init
 var componentFactory = new ComponentFactory();
 
 setTimeout(function() {
     console.log('=== Transactions ===', transactionsInstance.getTransactions());
 
-    var ledgerComponent = componentFactory.createComponent({
+    transactionsInstance.setBody(componentFactory.createComponent({
         template: 'LedgerComponent',
-        container: 'js-transactions__ledger-table',
+        container: 'js-transactions__ledger-table-body',
         data: transactionsInstance.getTransactions()
-    });
+    }));
+
+    transactionsInstance.showView();
 }, 2000);

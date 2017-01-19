@@ -13,11 +13,14 @@
 
         <main>
             <section class="c-card">
-                <div class="c-loading js-loading__message">
-                    Loading...
-                </div>
-
-                <table id="js-transactions__ledger-table" class="c-ledger js-loading__content" hidden></table>
+                <table id="js-transactions" class="c-ledger c--loading">
+                    <thead hidden> </thead>
+                    <tbody id="js-transactions__ledger-table-body">
+                        <tr class="c-ledger__row">
+                            <td class="c-ledger__column"> Loading... </td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
         </main>
 

@@ -13,6 +13,7 @@ body {
 /* ================ */
 /* Banner Component */
 /* ================ */
+
 .c-banner {
     padding: 15px 0;
     width: 100%;
@@ -25,8 +26,35 @@ body {
 /* ============== */
 /* Card Component */
 /* ============== */
+
 .c-card {
-    margin: 0 20px;
+    margin: 10px 20px;
 
     background-color: #fff;
+}
+
+/* ================ */
+/* Ledger Component */
+/* ================ */
+
+.c-ledger {
+    position: relative;
+    width: 100%;
+}
+
+.c-ledger.c--loading {
+
+}
+
+.c-ledger.c--loading::after {
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-color: #000;
+    opacity: 0.3;
 }
