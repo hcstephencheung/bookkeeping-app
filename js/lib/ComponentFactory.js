@@ -19,12 +19,12 @@ var ComponentsMap = {
 
         tableEl.innerHTML =
             '<table class="c-ledger">' +
-            '<thead id="js-transactions__head" class="c-ledger__head">' +
+            '<thead id="' + tableData.theadId + '" class="c-ledger__head">' +
             '<tr class="c-ledger__row">' +
             '<th> Date </th>' +
             '<th> Company </th>' +
             '<th> Account </th>' +
-            '<th id="js-transactions__balance"> Balance </th>' +
+            '<th id="' + tableData.balanceId + '"> Balance </th>' +
             '</tr>' +
             '</thead>' +
             '<tbody id="' + tableData.tbodyId + '" class="c-ledger__body c--loading">' +
@@ -38,7 +38,7 @@ var ComponentsMap = {
 
         return containerEl;
     },
-    // Table of transactions
+    // Ledger Component
     // ---
     LedgerComponent: function(containerEl, ledgerData) {
         // clear for new data

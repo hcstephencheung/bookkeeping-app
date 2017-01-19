@@ -9,27 +9,11 @@ DataBridge.init();
 var componentFactory = new ComponentFactory();
 // Transactions init
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
-transactionsInstance.setView('container', document.getElementById('js-transactions'));
-transactionsInstance.setView('head', document.getElementById('js-transactions__head'));
-transactionsInstance.setView('balance', document.getElementById('js-transactions__balance'));
 
 Events.addEventListener('bk-transactions-loaded', function() {
     console.log('=== Loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
 
     transactionsInstance.buildComponent(componentFactory, 'js-transactions');
-    // var tsCompopo = componentFactory.createComponent({
-    //     template: 'LedgerComponent',
-    //     container: 'js-transactions__ledger-table-body',
-    //     data: transactionsInstance.getTransactions()
-    // });
-
-    // transactionsInstance.setView('body', tsCompopo.el);
-
-    // transactionsInstance.setView('body', componentFactory.createComponent({
-    //     template: 'LedgerComponent',
-    //     container: 'js-transactions__ledger-table-body',
-    //     data: transactionsInstance.getTransactions()
-    // }));
 
     // componentFactory.createComponent({
     //     template: 'ListComponent',

@@ -96,10 +96,8 @@ var TransactionsSingleton = (function() {
         DataBridge.get(url, _updateData);
     };
 
-
     // Public Methods
     // ===
-
     var setView = function(part, DOMNode) {
         if (!view.hasOwnProperty(part)) {
             console.error('Transactions.setView : part is not defined', part);
@@ -136,13 +134,27 @@ var TransactionsSingleton = (function() {
 
     // TODO: refactor this out into Controller.prototype.buildComponent
     var tbodyId = 'js-transactions__ledger-table-body';
+    var theadId = 'js-transactions__ledger-table-head';
+    var balanceId = 'js-transactions__balance';
     var buildComponent = function(componentFactory, containerID) {
+        // build initial table
         var transactionsComponent = componentFactory.createComponent({
             template: 'TableComponent',
             container: containerID,
-            data: {tbodyId: tbodyId}
+            data: {tbodyId: tbodyId, theadId: theadId, balanceId: balanceId}
+        }).done(function(tableEl) {
+            if (!tableEl) {
+                console.warn('TransactionsSingleton: Component not created properly');
+                return false;
+            }
+
+            view.container = tableEl;
+            view.body = tableEl.querySelector('#' + tbodyId);
+            view.head = tableEl.querySelector('#' + theadId)
+            view.balance = tableEl.querySelector('#' + balanceId);
         });
 
+        // Data finished, render table contents
         Events.addEventListener('bk-transactions-loaded', function() {
             componentFactory.createComponent({
                 template: 'LedgerComponent',
