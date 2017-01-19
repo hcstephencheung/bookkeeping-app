@@ -40,10 +40,18 @@ body {
 .c-ledger {
     position: relative;
     width: 100%;
+
+    border-collapse: separate;
+    border-spacing: 0.8em 1em;
 }
 
 .c-ledger.c--loading {
 
+}
+
+.c-ledger__head {
+    text-align: left;
+    color: #098B8C;
 }
 
 .c-ledger.c--loading::after {

@@ -46,6 +46,21 @@ var DataBridge = (function() {
         get: _get
     };
 })();
+
+var Utils = (function() {
+    var serializeDollar = function(amount) {
+        if (typeof amount !== 'number' || isNaN(amount)) {
+            console.warn('Utils.serializeDollar : amount is not a number', amount);
+            return;
+        }
+
+        return (amount > 0) ? '$' + amount : '-$' + Math.abs(amount);
+    };
+
+    return {
+        serializeDollar: serializeDollar
+    };
+})()
 // ---
 // === Utils.js ===
 
@@ -228,7 +243,7 @@ var Components = {
                 '<td>' + rowData.Date + '</td>' +
                 '<td>' + rowData.Company + '</td>' +
                 '<td>' + rowData.Ledger + '</td>' +
-                '<td>' + rowData.Amount + '</td>' +
+                '<td>' + Utils.serializeDollar(parseFloat(rowData.Amount)) + '</td>' +
                 '</tr>';
 
             // TODO: maybe not return firstChild, will need more cases to refactor
