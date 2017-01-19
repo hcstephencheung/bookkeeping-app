@@ -227,7 +227,7 @@ var TransactionsSingleton = (function() {
     };
 
     var setView = function(part, DOMNode) {
-        if (view.hasOwnProperty(part)) {
+        if (!view.hasOwnProperty(part)) {
             console.error('Transactions.setView : part is not defined', part);
             return;
         }
@@ -351,9 +351,7 @@ transactionsInstance.setView('balance', document.getElementById('js-transactions
 var componentFactory = new ComponentFactory();
 
 var loadedTime = new Date();
-
 Events.addEventListener('bk-transactions-loaded', function() {
-    console.log('=== Transactions ===', transactionsInstance.getTransactions());
     console.log('=== Loaded in ' + (new Date() - loadedTime) + ' ms ===');
 
     transactionsInstance.setView('body', componentFactory.createComponent({
