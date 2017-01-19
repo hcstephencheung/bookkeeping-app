@@ -292,7 +292,7 @@ var Components = {
             rowEl.innerHTML =
                 '<tr class="c-ledger__row">' +
                 '<td>' + Utils.convertDateToReadable(rowData.Date) + '</td>' +
-                '<td>' + rowData.Company + '</td>' +
+                '<td class="c-ledger__bold">' + rowData.Company + '</td>' +
                 '<td>' + rowData.Ledger + '</td>' +
                 '<td>' + Utils.serializeDollar(parseFloat(rowData.Amount)) + '</td>' +
                 '</tr>';
