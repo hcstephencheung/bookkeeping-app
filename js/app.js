@@ -55,7 +55,8 @@ var DataBridge = (function() {
 var TransactionsSingleton = (function() {
     var instance;
     var data = {
-        transactions: []
+        transactions: [],
+        balance: 0
     };
     var totalCount;
     var TRANSACTIONS_ENDPOINT;
@@ -68,6 +69,20 @@ var TransactionsSingleton = (function() {
     var _isDataStreamFinished = function() {
         // could also emit event for "loading"
         return TRANSACTIONS_PAGE_COUNT > reqsNeeded;
+    };
+
+    var _updateBalance = function() {
+        if (!data.transactions) {
+            return;
+        }
+
+        data.transactions.forEach(function(entry) {
+            var increment = parseFloat(entry.Amount);
+
+            if (typeof increment === 'number') {
+                data.balance += increment;
+            }
+        });
     };
 
     var _updateMetadata = function() {
@@ -95,6 +110,8 @@ var TransactionsSingleton = (function() {
         // recursive call to get more data
         if (!_isDataStreamFinished()) {
             _getTransactionsFromEndpoint(TRANSACTIONS_ENDPOINT);
+        } else {
+            _updateBalance();
         }
     };
 
@@ -110,6 +127,10 @@ var TransactionsSingleton = (function() {
         return data.transactions;
     };
 
+    var getBalance = function() {
+        return data.balance;
+    };
+
     var init = function(endpoint) {
         // set url for endpoint for subsequent reqs
         TRANSACTIONS_ENDPOINT = endpoint;
@@ -118,7 +139,8 @@ var TransactionsSingleton = (function() {
 
         // Transactions API
         return {
-            getTransactions: getTransactions
+            getTransactions: getTransactions,
+            getBalance: getBalance
         };
     };
 
