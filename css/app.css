@@ -54,6 +54,10 @@ body {
     color: #098B8C;
 }
 
+.c-ledger__row {
+    font-size: 13px;
+}
+
 .c-ledger.c--loading::after {
     content: ' ';
     display: block;
