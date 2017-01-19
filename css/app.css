@@ -1,0 +1,92 @@
+html, body {
+    box-sizing: border-box;
+    font-family: "LLCircularWeb", "Helvetica Neue", Helvetica,Arial, "Lucida Grande", sans-serif;
+
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #EFEDE8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ================ */
+/* Banner Component */
+/* ================ */
+
+.c-banner {
+    padding: 15px 0;
+    width: 100%;
+
+    color: #fff;
+    background-color: #098B8C;
+    text-align: center;
+}
+
+/* ============== */
+/* Card Component */
+/* ============== */
+
+.c-card {
+    margin: 20px 20px;
+
+    box-shadow: 0 0 3px #888;
+
+    background-color: #fff;
+}
+
+/* ================ */
+/* Ledger Component */
+/* ================ */
+
+.c-ledger {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.c-ledger.c--loading {
+
+}
+
+.c-ledger__head {
+    text-align: left;
+    color: #098B8C;
+}
+
+.c-ledger__body {
+    position: relative;
+    background-color: #EFEDE8;
+}
+
+.c-ledger__body .c-ledger__row {
+    color: #aaa;
+}
+
+.c-ledger__row {
+    font-size: 13px;
+}
+
+.c-ledger__bold {
+    font-weight: bold;
+    color: #333;
+}
+
+.c-ledger__row td,
+.c-ledger__row th {
+    padding: 15px;
+
+    box-shadow: 0 1px 0 #ddd;
+}
+
+.c-ledger__row th {
+    font-size: 16px;
+}
+
+.c-ledger__row:hover td {
+    color: #098B8C;
+}

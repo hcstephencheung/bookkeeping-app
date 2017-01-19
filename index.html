@@ -1,11 +1,43 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-
+        <title> BookKeeping App </title>
+        <link rel="stylesheet" href="css/fonts.css"/>
+        <link rel="stylesheet" href="css/app.css"/>
     </head>
 
     <body>
-        <div id="js-book"></div>
+        <header class="c-banner">
+            <p> Bench Test </p>
+        </header>
+
+        <main>
+            <section class="c-card">
+                <table id="js-transactions" class="c-ledger">
+                    <thead id="js-transactions__head" class="c-ledger__head">
+                        <tr class="c-ledger__row">
+                            <th> Date </th>
+                            <th> Company </th>
+                            <th> Account </th>
+                            <th id="js-transactions__balance"> Balance </th>
+                        </tr>
+                    </thead>
+                    <tbody id="js-transactions__ledger-table-body" class="c-ledger__body c--loading">
+                        <tr class="c-ledger__row">
+                            <td colspan="4" class="c-ledger__column"> Loading... </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <script defer src="js/lib/Utils.js"></script>
+        <script defer src="js/lib/Events.js"></script>
+        <script defer src="js/lib/DataBridge.js"></script>
+        <script defer src="js/lib/ComponentFactory.js"></script>
+
+        <script defer src="js/Transactions.js"></script>
+
         <script defer src="js/app.js"></script>
     </body>
 </html>
