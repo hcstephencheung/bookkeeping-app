@@ -5,7 +5,20 @@
     </head>
 
     <body>
-        <div id="js-book"></div>
+        <header>
+
+        </header>
+
+        <main>
+            <section id="js-transactions js-loading c-transactions">
+                <div class="c-loading js-loading__message">
+                    Loading...
+                </div>
+
+                <table id="js-transactions__ledger-table" class="c-ledger js-loading__content" hidden></table>
+            </section>
+        </main>
+
         <script defer src="js/app.js"></script>
     </body>
 </html>

@@ -1,9 +1,9 @@
 // Book Keeping app
 var ENDPOINT = 'http://resttest.bench.co/transactions/';
 
+// === Utils.js ===
+// ---
 // Initialized with an endpoint URL, could be used for any endpoint with row entries
-// getAllRows : returns all data calculated based on totalCount * ROWS_PER_PAGE
-
 var DataBridge = (function() {
     var xhttp;
     var subscribers = [];
@@ -46,9 +46,12 @@ var DataBridge = (function() {
         get: _get
     };
 })();
+// ---
+// === Utils.js ===
 
+// === Transactions.js ===
 // Singleton for Data (we only need to fetch data once)
-//
+// getTransactions : retuns all transactions
 var TransactionsSingleton = (function() {
     var instance;
     var data = {
@@ -118,7 +121,7 @@ var TransactionsSingleton = (function() {
             getTransactions: getTransactions
         };
     };
-    
+
     return {
         create: function(endpoint) {
             if (!instance) {
@@ -129,13 +132,61 @@ var TransactionsSingleton = (function() {
         }
     };
 })();
+// ---
+// === Transactions.js ===
 
+// List of Components
+// === ComponentFactory.js ===
+// ---
+var Components = {
+    LedgerComponent: function(destinationContainer, data) {
+        var containerEl = document.getElementById(destinationContainer);
 
-// Runner
+        if (!containerEl) {
+            console.error('LedgerComponent Error: Container id incorrect', destinationContainer);
+            return;
+        }
+
+        if (!data) {
+            console.warn('LedgerComponent Warning: Data is ', data);
+            return
+        }
+
+        data.forEach(function(rowData) {
+            var rowEl = document.createElement('div');
+            rowEl.innerHTML = 
+                '<li class="c-ledger__row">' +
+                'Amount: ' + rowData.Amount +
+                'Company: ' + rowData.Company +
+                'Date: ' + rowData.Date +
+                'Ledger: ' + rowData.Ledger +
+                '</li>';
+
+            // TODO: maybe not return firstChild, will need more cases to refactor
+            containerEl.appendChild(rowEl.firstChild);
+        });
+    }
+};
+
+function ComponentFactory() {};
+ComponentFactory.prototype.createComponent = function(component) {
+    return new Components[component.template](component.container, component.data);
+};
+
+// ---
+// === ComponentFactory.js ===
+
+// RunnerJS
 DataBridge.init();
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
+var componentFactory = new ComponentFactory();
 
-// refactor this to listen for an event?
 setTimeout(function() {
     console.log('=== Transactions ===', transactionsInstance.getTransactions());
+
+    var ledgerComponent = componentFactory.createComponent({
+        template: 'LedgerComponent',
+        container: 'js-transactions__ledger-table',
+        data: transactionsInstance.getTransactions()
+    });
 }, 2000);
