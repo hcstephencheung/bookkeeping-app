@@ -16,17 +16,24 @@ transactionsInstance.setView('balance', document.getElementById('js-transactions
 Events.addEventListener('bk-transactions-loaded', function() {
     console.log('=== Loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
 
-    transactionsInstance.setView('body', componentFactory.createComponent({
-        template: 'LedgerComponent',
-        container: 'js-transactions__ledger-table-body',
-        data: transactionsInstance.getTransactions()
-    }));
+    transactionsInstance.buildComponent(componentFactory, 'js-transactions');
+    // var tsCompopo = componentFactory.createComponent({
+    //     template: 'LedgerComponent',
+    //     container: 'js-transactions__ledger-table-body',
+    //     data: transactionsInstance.getTransactions()
+    // });
 
-    transactionsInstance.showView();
+    // transactionsInstance.setView('body', tsCompopo.el);
 
-    componentFactory.createComponent({
-        template: 'ListComponent',
-        container: 'js-category-list',
-        data: transactionsInstance.getTransactions()
-    });
+    // transactionsInstance.setView('body', componentFactory.createComponent({
+    //     template: 'LedgerComponent',
+    //     container: 'js-transactions__ledger-table-body',
+    //     data: transactionsInstance.getTransactions()
+    // }));
+
+    // componentFactory.createComponent({
+    //     template: 'ListComponent',
+    //     container: 'js-category-list',
+    //     data: transactionsInstance.getTransactions()
+    // });
 });

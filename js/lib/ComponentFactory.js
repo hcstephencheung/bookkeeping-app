@@ -9,11 +9,42 @@
 * where options is object { template: 'nameOfComponent', container: 'idOfWrapper', data: dataOfComponent }
 */
 var ComponentsMap = {
-    LedgerComponent: function(containerEl, tableData) {
+    // Table Component
+    // ---
+    TableComponent: function(containerEl, tableData) {
         // clear for new data
         containerEl.innerHTML= '';
 
-        tableData.forEach(function(rowData) {
+        var tableEl = document.createElement('div');
+
+        tableEl.innerHTML =
+            '<table class="c-ledger">' +
+            '<thead id="js-transactions__head" class="c-ledger__head">' +
+            '<tr class="c-ledger__row">' +
+            '<th> Date </th>' +
+            '<th> Company </th>' +
+            '<th> Account </th>' +
+            '<th id="js-transactions__balance"> Balance </th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody id="' + tableData.tbodyId + '" class="c-ledger__body c--loading">' +
+            '<tr class="c-ledger__row">' +
+            '<td colspan="4" class="c-ledger__column"> Loading... </td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>';
+
+        containerEl.appendChild(tableEl.firstChild);
+
+        return containerEl;
+    },
+    // Table of transactions
+    // ---
+    LedgerComponent: function(containerEl, ledgerData) {
+        // clear for new data
+        containerEl.innerHTML= '';
+
+        ledgerData.forEach(function(rowData) {
             var rowEl = document.createElement('tbody');
             rowEl.innerHTML =
                 '<tr class="c-ledger__row">' +
@@ -29,6 +60,8 @@ var ComponentsMap = {
 
         return containerEl;
     },
+    // List Component
+    // ---
     ListComponent: function(containerEl, listData) {
         // clear for new data
         containerEl.innerHTML= '';
@@ -40,7 +73,7 @@ var ComponentsMap = {
             var listItemEl = document.createElement('div'); // wrapper div
             listItemEl.innerHTML =
                 '<li class="c-list__item">' +
-                listItemData.Company +
+                listItemData.content +
                 '</li>';
 
             listEl.appendChild(listItemEl.firstChild);
@@ -52,8 +85,9 @@ var ComponentsMap = {
     }
 };
 
-var Component = function(templateName, destinationContainer, data) {
+function Component(templateName, destinationContainer, data) {
     var containerEl = document.getElementById(destinationContainer);
+    var component = this;
 
     if (!containerEl) {
         console.error('LedgerComponent Error: Container id incorrect', destinationContainer);
@@ -65,7 +99,24 @@ var Component = function(templateName, destinationContainer, data) {
         return;
     }
 
-    return ComponentsMap[templateName](containerEl, data);
+    component.el = ComponentsMap[templateName](containerEl, data);
+    console.log('=== ' + templateName + ' has loaded ===');
+
+    return component;
+};
+
+Component.prototype.done = function(postRenderCb) {
+    var component = this;
+    if (!component.el) {
+        console.error('Component creation failed');
+        return false;
+    }
+
+    if (typeof postRenderCb === 'function') {
+        postRenderCb(component.el);
+    }
+
+    return component.el;
 };
 
 function ComponentFactory() {};
