@@ -47,8 +47,6 @@ var DataBridge = (function() {
     };
 })();
 
-DataBridge.init();
-
 // Singleton for Data (we only need to fetch data once)
 //
 var TransactionsSingleton = (function() {
@@ -57,10 +55,22 @@ var TransactionsSingleton = (function() {
         transactions: []
     };
     var totalCount;
-
+    var TRANSACTIONS_ENDPOINT;
     var TRANSACTIONS_PAGE_COUNT = 1;
     var ROWS_PER_PAGE = 10;
     var ENDPOINT_DATA_TYPE = '.json';
+    var reqsNeeded = 0;
+
+    // checks if ajax-ed data is finished
+    var _isDataStreamFinished = function() {
+        // could also emit event for "loading"
+        return TRANSACTIONS_PAGE_COUNT > reqsNeeded;
+    };
+
+    var _updateMetadata = function() {
+        reqsNeeded = Math.round(totalCount / ROWS_PER_PAGE);
+        TRANSACTIONS_PAGE_COUNT++;
+    };
 
     var _updateData = function(ajaxData) {
         var fetchedData = JSON.parse(ajaxData);
@@ -73,33 +83,39 @@ var TransactionsSingleton = (function() {
             return;
         }
 
-        // append our data from the DB
+        // update our data
         data.transactions = data.transactions.concat(fetchedData.transactions);
         totalCount = fetchedData.totalCount;
-    };
 
-    // checks if ajax-ed data is finished
-    var _isFinished = function() {
-        return totalCount && (TRANSACTIONS_PAGE_COUNT * ROWS_PER_PAGE > totalCount);
+        _updateMetadata();
+
+        // recursive call to get more data
+        if (!_isDataStreamFinished()) {
+            _getTransactionsFromEndpoint(TRANSACTIONS_ENDPOINT);
+        }
     };
 
     // initial instance to get transactions
     var _getTransactionsFromEndpoint = function(endpoint) {
-        var url = endpoint + TRANSACTIONS_PAGE_COUNT + ENDPOINT_DATA_TYPE;
+        var pageCount = TRANSACTIONS_PAGE_COUNT;
+        var url = endpoint + pageCount + ENDPOINT_DATA_TYPE;
 
         DataBridge.get(url, _updateData);
     };
 
-    var _getTransactions = function() {
+    var getTransactions = function() {
         return data.transactions;
     };
 
     var init = function(endpoint) {
-        // initial fetch
-        _getTransactionsFromEndpoint(endpoint);
+        // set url for endpoint for subsequent reqs
+        TRANSACTIONS_ENDPOINT = endpoint;
+        // initial data fetch
+        _getTransactionsFromEndpoint(TRANSACTIONS_ENDPOINT);
 
+        // Transactions API
         return {
-            getTransactions: _getTransactions
+            getTransactions: getTransactions
         };
     };
     
@@ -116,6 +132,7 @@ var TransactionsSingleton = (function() {
 
 
 // Runner
+DataBridge.init();
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
 
 // refactor this to listen for an event?
