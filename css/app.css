@@ -32,7 +32,7 @@ body {
 /* ============== */
 
 .c-card {
-    margin: 10px 20px;
+    margin: 20px 20px;
 
     box-shadow: 0 0 1px #888;
 
@@ -64,7 +64,7 @@ body {
 }
 
 .c-ledger__body .c-ledger__row {
-    color: #bbb;
+    color: #aaa;
 }
 
 .c-ledger__row {

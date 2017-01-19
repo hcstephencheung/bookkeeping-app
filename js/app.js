@@ -157,7 +157,7 @@ var TransactionsSingleton = (function() {
         });
 
         if (view.balance) {
-            view.balance.innerHTML = data.balance;
+            view.balance.innerHTML = Utils.serializeDollar(data.balance);
         }
     };
 
