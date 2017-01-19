@@ -111,7 +111,32 @@ var Utils = (function() {
         serializeDollar: serializeDollar,
         convertDateToReadable: convertDateToReadable
     };
-})()
+})();
+
+var Events = (function() {
+    var subscribedEvents = {};
+
+    return {
+        addEventListener: function(event, subscriber) {
+            if (!subscribedEvents.hasOwnProperty(event)) {
+                subscribedEvents[event] = [];
+            }
+
+            subscribedEvents[event].push(subscriber);
+        },
+        fireEvent: function(event, data) {
+            if (subscribedEvents.hasOwnProperty(event)) {
+                for(var subbed = 0; subbed < subscribedEvents[event].length; subbed++) {
+                    try {
+                        subscribedEvents[event][subbed].call(null, data);
+                    } catch (e) {
+                        console.error('Events error: ', e);
+                    }
+                }
+            }
+        }
+    }
+})();
 // ---
 // === Utils.js ===
 
@@ -188,6 +213,8 @@ var TransactionsSingleton = (function() {
             _getTransactionsFromEndpoint(TRANSACTIONS_ENDPOINT);
         } else {
             _updateBalance();
+
+            Events.fireEvent('bk-transactions-loaded');
         }
     };
 
@@ -200,7 +227,7 @@ var TransactionsSingleton = (function() {
     };
 
     var setView = function(part, DOMNode) {
-        if (typeof view[part] === undefined) {
+        if (view.hasOwnProperty(part)) {
             console.error('Transactions.setView : part is not defined', part);
             return;
         }
@@ -323,8 +350,11 @@ transactionsInstance.setView('balance', document.getElementById('js-transactions
 // Component init
 var componentFactory = new ComponentFactory();
 
-setTimeout(function() {
+var loadedTime = new Date();
+
+Events.addEventListener('bk-transactions-loaded', function() {
     console.log('=== Transactions ===', transactionsInstance.getTransactions());
+    console.log('=== Loaded in ' + (new Date() - loadedTime) + ' ms ===');
 
     transactionsInstance.setView('body', componentFactory.createComponent({
         template: 'LedgerComponent',
@@ -333,4 +363,4 @@ setTimeout(function() {
     }));
 
     transactionsInstance.showView();
-}, 2000);
+});
