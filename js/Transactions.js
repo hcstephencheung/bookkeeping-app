@@ -167,7 +167,7 @@ var TransactionsSingleton = (function() {
     };
 
     // Additional Feature: Categories List
-    var buildCategoriesList = function(componentFactory, containerID, categoryName) {
+    var getTransactionsByCategory = function(categoryName) {
         var categoriesWithTransactions = {};
         var categories = [];
         var listItemObj = {
@@ -186,37 +186,135 @@ var TransactionsSingleton = (function() {
 
                 if (typeof categoriesWithTransactions[key] === 'undefined') {
                     categoriesWithTransactions[key] = [];
-
-                    categories.push({
-                        id: key,
-                        content: '' + headingName
-                    });
                 }
 
                 categoriesWithTransactions[key].push({
                     id: key,
+                    categoryName: '' + headingName,
                     amount: parseFloat(transaction.Amount),
-                    content: Utils.serializeDollar(parseFloat(transaction.Amount))
+                    company: transaction.Company,
+                    ledger: transaction.Ledger,
+                    date: transaction.Date
                 });
             }
         });
 
+        return categoriesWithTransactions;
+    };
+
+    var buildLedgerListView = function(componentFactory, containerID) {
+        var categoriesWithTransactions = getTransactionsByCategory('Ledger');
+        var categories = [];
+
+        for (var heading in categoriesWithTransactions) {
+            // build transaction content and title for list
+            for (var t = 0; t < categoriesWithTransactions[heading].length; t++) {
+                if (t === 0) {
+                    categories.push({id: heading, content: categoriesWithTransactions[heading][t].categoryName});
+                }
+
+                // text output for our list
+                var content = 
+                    Utils.serializeDollar(parseFloat(categoriesWithTransactions[heading][t].amount)) +
+                    ' : ' +
+                    Utils.convertDateToReadable(categoriesWithTransactions[heading][t].date);
+                categoriesWithTransactions[heading][t].content = content;
+            }
+        }
+
         // Update balance in categories
         categories.forEach(function(category) {
-            var sum = 0;
-            category.balance = categoriesWithTransactions[category.id].reduce(function(sum, curr) {
+            category.balance = {};
+            category.balance.amount = categoriesWithTransactions[category.id].reduce(function(sum, curr) {
                 if (typeof sum === 'number') {
                     return sum + curr.amount;
                 }
 
                 return sum.amount + curr.amount;
             }, 0);
-        })
+
+            // Balance View Logic
+            category.balance.amount > 0 ?
+                category.balance.modifier = 'green' :
+                category.balance.modifier = 'red';
+
+            category.balance.amount = Utils.serializeDollar(category.balance.amount);
+        });
+
+        
 
         componentFactory.createComponent({
             template: 'ListComponent',
             container: containerID,
             data: categories
+        }).done(function(listEl) {
+            var listItems = listEl.querySelectorAll('li');
+
+            listItems.forEach(function(listItemEl) {
+                var key = listItemEl.getAttribute('id');
+
+                componentFactory.createComponent({
+                    template: 'ListComponent',
+                    container: key,
+                    data: categoriesWithTransactions[key]
+                })
+            })
+        });
+    };
+
+    var buildDateListView = function(componentFactory, containerID) {
+        var categoriesWithTransactions = getTransactionsByCategory('Date');
+        var categories = [];
+
+        for (var heading in categoriesWithTransactions) {
+            // build transaction content and title for list
+            for (var t = 0; t < categoriesWithTransactions[heading].length; t++) {
+                if (t === 0) {
+                    categories.push({
+                        id: heading,
+                        date: categoriesWithTransactions[heading][t].date,
+                        content: categoriesWithTransactions[heading][t].categoryName});
+                }
+
+                // text output for our list
+                var content = 
+                    Utils.serializeDollar(parseFloat(categoriesWithTransactions[heading][t].amount)) + 
+                    ' : ' +
+                    categoriesWithTransactions[heading][t].ledger;
+                categoriesWithTransactions[heading][t].content = content;
+            }
+        }
+
+        // for:in does not guarantee order, so we should sort
+        // our list to ensure our daily balances are correct
+        categories.sort(function(date, nextDate) {
+            return new Date(date.date) - new Date(nextDate.date);
+        });
+
+        var sum = 0;
+        // Update balance in categories
+        categories.forEach(function(category) {
+            category.balance = {};
+
+            sum += categoriesWithTransactions[category.id].reduce(function(curr, next) {
+                if (typeof curr === 'number') {
+                    return curr + next.amount;
+                }
+
+                return curr.amount + next.amount;
+            }, 0);
+
+            sum > 0 ?
+                category.balance.modifier = 'green' :
+                category.balance.modifier = 'red';
+
+            category.balance.amount = Utils.serializeDollar(sum);
+        });
+
+        componentFactory.createComponent({
+            template: 'ListComponent',
+            container: containerID,
+            data: categories.reverse()
         }).done(function(listEl) {
             var listItems = listEl.querySelectorAll('li');
 
@@ -242,17 +340,21 @@ var TransactionsSingleton = (function() {
         // Transactions API
         return {
             // getters
-            getTransactions: getTransactions,
             getBalance: getBalance,
+            getTransactions: getTransactions,
+            getTransactionsByCategory: getTransactionsByCategory,
             getView: getView,
 
-            // setters
+            // view builders
             buildComponent: buildComponent,
-            buildCategoriesList: buildCategoriesList,
-            setView: setView,
+            buildDateListView: buildDateListView,
+            buildLedgerListView: buildLedgerListView,
 
-            // misc
-            showView: showView
+            // view methods
+            showView: showView,
+
+            // setters
+            setView: setView
         };
     };
 

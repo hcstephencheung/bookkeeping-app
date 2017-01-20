@@ -11,9 +11,10 @@ var componentFactory = new ComponentFactory();
 var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
 
 Events.addEventListener('bk-transactions-loaded', function() {
-    console.log('=== Loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
-
     transactionsInstance.buildComponent(componentFactory, 'js-transactions');
+    transactionsInstance.buildLedgerListView(componentFactory, 'js-category-list');
+    transactionsInstance.buildDateListView(componentFactory, 'js-date-list');
 
-    transactionsInstance.buildCategoriesList(componentFactory, 'js-category-list', 'Ledger');
+    console.log('=== Loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
 });
+

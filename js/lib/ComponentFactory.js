@@ -72,13 +72,24 @@ var ComponentsMap = {
             }
 
             var listItemEl = document.createElement('div'); // wrapper div
-            listItemEl.innerHTML =
-                '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
-                '<p>' + listItemData.content +
-                '<span class="c-list__note c--' + (listItemData.balance > 0 ? 'green' : 'red') + '">' +
-                (listItemData.balance ? listItemData.balance : '') + '</span>' +
-                '</p>' +
-                '</li>';
+
+            if (typeof listItemData.balance !== 'undefined') {
+                listItemEl.innerHTML =
+                    '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
+                    '<div class="c-list__item-heading c-arrange">' +
+                    '<p class="c-arrange__item">' + listItemData.content + '</p>' +
+                    '<span class="c-list__note c-arrange__item c--shrink c--' + listItemData.balance.modifier + '">' + listItemData.balance.amount + '</span>' +
+                    '</div>' +
+                    '</li>';
+            } else {
+                listItemEl.innerHTML =
+                    '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
+                    '<div class="c-list__item-heading c-arrange">' +
+                    '<p class="c-arrange__item">' + listItemData.content + '</p>' +
+                    '</div>' +
+                    '</li>';
+            }
+            
 
             listEl.appendChild(listItemEl.firstChild);
         });

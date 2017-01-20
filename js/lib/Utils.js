@@ -17,7 +17,7 @@ var Utils = (function() {
             return;
         }
 
-        return (amount > 0) ? '$' + amount : '-$' + Math.abs(amount);
+        return (amount > 0) ? '$' + amount.toFixed(2) : '-$' + Math.abs(amount).toFixed(2);
     };
 
     var convertDateToReadable = function(YYYYMMDD) {

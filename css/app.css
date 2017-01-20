@@ -26,6 +26,9 @@ body {
     background-color: #098B8C;
     text-align: center;
 }
+h2.c-banner {
+    margin: 0;
+}
 
 /* ============== */
 /* Card Component */
@@ -90,4 +93,68 @@ body {
 
 .c-ledger__row:hover td {
     color: #098B8C;
+}
+
+/* ============== */
+/* List Component */
+/* ============== */
+.c-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 15px;
+
+    background-color: #EFEDE8;
+}
+
+.c-list__item {
+    list-style: none;
+
+    position: relative;
+    overflow: auto;
+
+    padding: 10px 3px;
+}
+
+.c-list__item .c-list {
+    box-shadow: 0 0 3px #888;
+    background-color: #fff;
+}
+
+.c-list__item .c-list .c-list__item {
+    padding: 5px 0;
+}
+
+.c-list__item-heading {
+    margin: 10px 0;
+}
+
+.c-list__item-heading p {
+    margin: 0;
+}
+
+.c-list__note {
+    padding-right: 3px;
+    text-align: right;
+}
+
+.c-list .c--green {
+    color: #007A75;
+}
+
+.c-list .c--red {
+    color: #c7254e;
+}
+
+
+/* Arrange */
+.c-arrange {
+    display: flex;
+}
+
+.c-arrange__item {
+    flex: 1 1 100%;
+}
+
+.c-arrange__item.c--shrink {
+    flex: 2 2 100%;
 }
