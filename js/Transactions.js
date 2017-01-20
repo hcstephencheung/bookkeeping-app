@@ -111,6 +111,41 @@ var TransactionsSingleton = (function() {
         return data.transactions;
     };
 
+    var getTransactionsByCategory = function(categoryName) {
+        var categoriesWithTransactions = {};
+        var categories = [];
+        var listItemObj = {
+            id: null,
+            content: ''
+        };
+
+        data.transactions.map(function(transaction) {
+            for (heading in transaction) {
+                if (heading !== categoryName) {
+                    continue;
+                }
+
+                var headingName = transaction[heading] === '' ? 'Unspecified' : transaction[heading];
+                var key = ('' + heading + headingName).hashCode();
+
+                if (typeof categoriesWithTransactions[key] === 'undefined') {
+                    categoriesWithTransactions[key] = [];
+                }
+
+                categoriesWithTransactions[key].push({
+                    id: key,
+                    categoryName: '' + headingName,
+                    amount: parseFloat(transaction.Amount),
+                    company: transaction.Company,
+                    ledger: transaction.Ledger,
+                    date: transaction.Date
+                });
+            }
+        });
+
+        return categoriesWithTransactions;
+    };
+
     var getBalance = function() {
         return data.balance;
     };
@@ -158,7 +193,7 @@ var TransactionsSingleton = (function() {
         Events.addEventListener('bk-transactions-loaded', function() {
             var transactionsArray = transactionsInstance.getTransactions();
 
-            // Additional Feature 1.
+            // [ADF] 1.
             transactionsArray.map(function(transaction) {
                 transaction.Company = Utils.removeGarbageFromTitle(transaction.Company);
                 return transaction;
@@ -174,42 +209,7 @@ var TransactionsSingleton = (function() {
         });
     };
 
-    // Additional Feature: Categories List
-    var getTransactionsByCategory = function(categoryName) {
-        var categoriesWithTransactions = {};
-        var categories = [];
-        var listItemObj = {
-            id: null,
-            content: ''
-        };
-
-        data.transactions.map(function(transaction) {
-            for (heading in transaction) {
-                if (heading !== categoryName) {
-                    continue;
-                }
-
-                var headingName = transaction[heading] === '' ? 'Unspecified' : transaction[heading];
-                var key = ('' + heading + headingName).hashCode();
-
-                if (typeof categoriesWithTransactions[key] === 'undefined') {
-                    categoriesWithTransactions[key] = [];
-                }
-
-                categoriesWithTransactions[key].push({
-                    id: key,
-                    categoryName: '' + headingName,
-                    amount: parseFloat(transaction.Amount),
-                    company: transaction.Company,
-                    ledger: transaction.Ledger,
-                    date: transaction.Date
-                });
-            }
-        });
-
-        return categoriesWithTransactions;
-    };
-
+    // [ADF] 3: Categories List
     var buildLedgerListView = function(componentFactory, containerID) {
         var categoriesWithTransactions = getTransactionsByCategory('Ledger');
         var categories = [];
@@ -268,6 +268,7 @@ var TransactionsSingleton = (function() {
         });
     };
 
+    // [ADF] 4: Daily Balances List
     var buildDateListView = function(componentFactory, containerID) {
         var categoriesWithTransactions = getTransactionsByCategory('Date');
         var categories = [];
