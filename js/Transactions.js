@@ -132,7 +132,7 @@ var TransactionsSingleton = (function() {
         }
     };
 
-    // TODO: refactor this out into Controller.prototype.buildComponent
+    // TODO: refactor this out into a Controller.prototype.buildComponent
     var tbodyId = 'js-transactions__ledger-table-body';
     var theadId = 'js-transactions__ledger-table-head';
     var balanceId = 'js-transactions__balance';
@@ -165,6 +165,72 @@ var TransactionsSingleton = (function() {
             showView();
         });
     };
+
+    // Additional Feature: Categories List
+    var buildCategoriesList = function(componentFactory, containerID, categoryName) {
+        var categoriesWithTransactions = {};
+        var categories = [];
+        var listItemObj = {
+            id: null,
+            content: ''
+        };
+
+        data.transactions.map(function(transaction) {
+            for (heading in transaction) {
+                if (heading !== categoryName) {
+                    continue;
+                }
+
+                var headingName = transaction[heading] === '' ? 'Unspecified' : transaction[heading];
+                var key = ('' + heading + headingName).hashCode();
+
+                if (typeof categoriesWithTransactions[key] === 'undefined') {
+                    categoriesWithTransactions[key] = [];
+
+                    categories.push({
+                        id: key,
+                        content: '' + headingName
+                    });
+                }
+
+                categoriesWithTransactions[key].push({
+                    id: key,
+                    amount: parseFloat(transaction.Amount),
+                    content: Utils.serializeDollar(parseFloat(transaction.Amount))
+                });
+            }
+        });
+
+        // Update balance in categories
+        categories.forEach(function(category) {
+            var sum = 0;
+            category.balance = categoriesWithTransactions[category.id].reduce(function(sum, curr) {
+                if (typeof sum === 'number') {
+                    return sum + curr.amount;
+                }
+
+                return sum.amount + curr.amount;
+            }, 0);
+        })
+
+        componentFactory.createComponent({
+            template: 'ListComponent',
+            container: containerID,
+            data: categories
+        }).done(function(listEl) {
+            var listItems = listEl.querySelectorAll('li');
+
+            listItems.forEach(function(listItemEl) {
+                var key = listItemEl.getAttribute('id');
+
+                componentFactory.createComponent({
+                    template: 'ListComponent',
+                    container: key,
+                    data: categoriesWithTransactions[key]
+                })
+            })
+        });
+    };
     // ===
 
     var init = function(endpoint) {
@@ -182,6 +248,7 @@ var TransactionsSingleton = (function() {
 
             // setters
             buildComponent: buildComponent,
+            buildCategoriesList: buildCategoriesList,
             setView: setView,
 
             // misc

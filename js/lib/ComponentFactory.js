@@ -63,17 +63,21 @@ var ComponentsMap = {
     // List Component
     // ---
     ListComponent: function(containerEl, listData) {
-        // clear for new data
-        containerEl.innerHTML= '';
-
         var listEl = document.createElement('ul');
         listEl.classList.add('c-list');
 
         listData.forEach(function(listItemData) {
+            if (listItemData === undefined) {
+                return;
+            }
+
             var listItemEl = document.createElement('div'); // wrapper div
             listItemEl.innerHTML =
-                '<li class="c-list__item">' +
-                listItemData.content +
+                '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
+                '<p>' + listItemData.content +
+                '<span class="c-list__note c--' + (listItemData.balance > 0 ? 'green' : 'red') + '">' +
+                (listItemData.balance ? listItemData.balance : '') + '</span>' +
+                '</p>' +
                 '</li>';
 
             listEl.appendChild(listItemEl.firstChild);

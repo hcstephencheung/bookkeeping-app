@@ -15,9 +15,5 @@ Events.addEventListener('bk-transactions-loaded', function() {
 
     transactionsInstance.buildComponent(componentFactory, 'js-transactions');
 
-    // componentFactory.createComponent({
-    //     template: 'ListComponent',
-    //     container: 'js-category-list',
-    //     data: transactionsInstance.getTransactions()
-    // });
+    transactionsInstance.buildCategoriesList(componentFactory, 'js-category-list', 'Ledger');
 });
