@@ -20,6 +20,10 @@ var Utils = (function() {
         return (amount > 0) ? '$' + amount.toFixed(2) : '-$' + Math.abs(amount).toFixed(2);
     };
 
+    var removeGarbageFromTitle = function(title) {
+        return title.replace(/([^\w\s\.\,][^\s]*\s{1})/ig, '');
+    };
+
     var convertDateToReadable = function(YYYYMMDD) {
         if (!YYYYMMDD) {
             console.warn('Utils.convertDateToReadable : input date is undefined', YYYYMMDD);
@@ -71,8 +75,9 @@ var Utils = (function() {
     };
 
     return {
+        convertDateToReadable: convertDateToReadable,
         serializeDollar: serializeDollar,
-        convertDateToReadable: convertDateToReadable
+        removeGarbageFromTitle: removeGarbageFromTitle
     };
 })();
 // Hash function to create hash keys for categories

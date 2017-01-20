@@ -156,6 +156,14 @@ var TransactionsSingleton = (function() {
 
         // Data finished, render table contents
         Events.addEventListener('bk-transactions-loaded', function() {
+            var transactionsArray = transactionsInstance.getTransactions();
+
+            // Additional Feature 1.
+            transactionsArray.map(function(transaction) {
+                transaction.Company = Utils.removeGarbageFromTitle(transaction.Company);
+                return transaction;
+            });
+
             componentFactory.createComponent({
                 template: 'LedgerComponent',
                 container: tbodyId,
@@ -240,8 +248,6 @@ var TransactionsSingleton = (function() {
 
             category.balance.amount = Utils.serializeDollar(category.balance.amount);
         });
-
-        
 
         componentFactory.createComponent({
             template: 'ListComponent',
