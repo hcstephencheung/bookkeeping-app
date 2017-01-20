@@ -31,11 +31,35 @@ var TransactionsSingleton = (function() {
     var ROWS_PER_PAGE = 10;
     var ENDPOINT_DATA_TYPE = '.json';
     var reqsNeeded = 0;
+    var hashedTransactions = [];
 
     // checks if ajax-ed data is finished
     var _isDataStreamFinished = function() {
-        // could also emit event for "loading"
         return TRANSACTIONS_PAGE_COUNT > reqsNeeded;
+    };
+
+    // [ADF] 2. Remove Duplicates (stored them just for fun)
+    var _serializeTransactions = function(transactionsArray) {
+        return transactionsArray.filter(function(transaction) {
+            var hashString = '';
+            var isDuplicate = false;
+
+            for (var heading in transaction) {
+                hashString += transaction[heading];
+            }
+
+            var hashKey = hashString.hashCode();
+            
+            if (typeof hashedTransactions[hashKey] === 'undefined') {
+                hashedTransactions[hashKey] = [];
+                hashedTransactions[hashKey].push(transaction);
+            } else {
+                hashedTransactions[hashKey].push(transaction);
+                isDuplicate = true;
+            }
+
+            return !isDuplicate;
+        });
     };
 
     var _updateBalance = function() {
@@ -73,7 +97,8 @@ var TransactionsSingleton = (function() {
         }
 
         // update our data
-        data.transactions = data.transactions.concat(fetchedData.transactions);
+        // [ADF] 2. Remove Duplicates (stored them just for fun)
+        data.transactions = data.transactions.concat(_serializeTransactions(fetchedData.transactions));
         totalCount = fetchedData.totalCount;
 
         _updateMetadata();
