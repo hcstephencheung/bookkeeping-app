@@ -115,7 +115,7 @@ function Component(templateName, destinationContainer, data) {
     }
 
     component.el = ComponentsMap[templateName](containerEl, data);
-    console.log('=== ' + templateName + ' has loaded ===');
+    console.debug('=== ' + templateName + ' has loaded ===');
 
     return component;
 };
@@ -131,7 +131,7 @@ Component.prototype.done = function(postRenderCb) {
         postRenderCb(component.el);
     }
 
-    return component.el;
+    return component;
 };
 
 function ComponentFactory() {};

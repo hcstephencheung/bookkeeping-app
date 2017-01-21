@@ -38,37 +38,6 @@ var TransactionsSingleton = (function() {
         return TRANSACTIONS_PAGE_COUNT > reqsNeeded;
     };
 
-    // [ADF] 2. Remove Duplicates (stored them just for fun)
-    var _serializeTransactions = function(transactionsArray) {
-        return transactionsArray.filter(function(transaction) {
-            var hashString = '';
-            var isDuplicate = false;
-
-            for (var heading in transaction) {
-                hashString += transaction[heading];
-            }
-
-            var hashKey = hashString.hashCode();
-            
-            if (typeof hashedTransactions[hashKey] === 'undefined') {
-                hashedTransactions[hashKey] = [];
-                hashedTransactions[hashKey].push(transaction);
-            } else {
-                hashedTransactions[hashKey].push(transaction);
-                isDuplicate = true;
-            }
-
-            return !isDuplicate;
-        });
-    };
-
-    // assumes transaction.Amount
-    var _filterExpenses = function(transactionsArray) {
-        return transactionsArray.filter(function(transaction) {
-            return transaction.Amount < 0;
-        });
-    };
-
     var _updateBalance = function() {
         if (!data.transactions) {
             return;
@@ -128,17 +97,39 @@ var TransactionsSingleton = (function() {
         DataBridge.get(url, _updateData);
     };
 
+    // [ADF] 2. Remove Duplicates (stored them just for fun)
+    var _serializeTransactions = function(transactionsArray) {
+        return transactionsArray.filter(function(transaction) {
+            var hashString = '';
+            var isDuplicate = false;
+
+            for (var heading in transaction) {
+                hashString += transaction[heading];
+            }
+
+            var hashKey = hashString.hashCode();
+            
+            if (typeof hashedTransactions[hashKey] === 'undefined') {
+                hashedTransactions[hashKey] = [];
+                hashedTransactions[hashKey].push(transaction);
+            } else {
+                hashedTransactions[hashKey].push(transaction);
+                isDuplicate = true;
+            }
+
+            return !isDuplicate;
+        });
+    };
+
+    // assumes transaction.Amount
+    var _filterExpenses = function(transactionsArray) {
+        return transactionsArray.filter(function(transaction) {
+            return transaction.Amount < 0;
+        });
+    };
+
     // Public Methods
     // ===
-    var setView = function(part, DOMNode) {
-        if (!view.hasOwnProperty(part)) {
-            console.error('Transactions.setView : part is not defined', part);
-            return;
-        }
-
-        view[part] = DOMNode;
-    }
-
     var getTransactions = function() {
         return data.transactions;
     };
@@ -191,7 +182,16 @@ var TransactionsSingleton = (function() {
 
     var getView = function() {
         return view;
-    }
+    };
+
+    var setView = function(part, DOMNode) {
+        if (!view.hasOwnProperty(part)) {
+            console.error('Transactions.setView : part is not defined', part);
+            return;
+        }
+
+        view[part] = DOMNode;
+    };
 
     var showView = function() {
         for (var part in view) {
@@ -249,7 +249,7 @@ var TransactionsSingleton = (function() {
     };
 
     // [ADF] 3: Categories List
-    var buildLedgerListView = function(componentFactory, containerID) {
+    var buildExpensesListView = function(componentFactory, containerID) {
         var options = {showOnlyExpenses: true};
         var categoriesWithTransactions = getTransactionsByCategory('Ledger', options);
         var categories = [];
@@ -291,7 +291,7 @@ var TransactionsSingleton = (function() {
             category.balance.amount = Utils.serializeDollar(category.balance.amount);
         });
 
-        componentFactory.createComponent({
+        return componentFactory.createComponent({
             template: 'ListComponent',
             container: containerID,
             data: categories
@@ -360,7 +360,7 @@ var TransactionsSingleton = (function() {
             category.balance.amount = Utils.serializeDollar(sum);
         });
 
-        componentFactory.createComponent({
+        return componentFactory.createComponent({
             template: 'ListComponent',
             container: containerID,
             data: categories.reverse()
@@ -397,7 +397,7 @@ var TransactionsSingleton = (function() {
             // view builders
             buildComponent: buildComponent,
             buildDateListView: buildDateListView,
-            buildLedgerListView: buildLedgerListView,
+            buildExpensesListView: buildExpensesListView,
 
             // view methods
             showView: showView,
