@@ -157,3 +157,16 @@ h2.c-banner {
 .c-list .c--red {
     color: #c7254e;
 }
+
+/* ==================== */
+/* Scrollable Component */
+/* ==================== */
+
+.c-scrollable {
+    display: block;
+    overflow-x: scroll;
+}
+
+.c-scrollable::-webkit-scrollbar {
+    display: none;
+}
