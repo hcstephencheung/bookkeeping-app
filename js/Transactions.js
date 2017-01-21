@@ -6,9 +6,9 @@
 * API
 * ===
 * getTransactions : retuns all transactions
-* getBalance : returns total balance as a float
-* getView : returns view object, where view is composed of DOM Elements
-* setView : binds DOM Elements to view object
+* buildComponent : builds main transactions table into DOM
+* buildDateListView: builds daily balances list
+* buildExpensesListView: builds expenses list
 * showView : clears all loading states in view object
 *
 * create(url) : Singleton is created with a data endpoint
@@ -128,13 +128,7 @@ var TransactionsSingleton = (function() {
         });
     };
 
-    // Public Methods
-    // ===
-    var getTransactions = function() {
-        return data.transactions;
-    };
-
-    var getTransactionsByCategory = function(categoryName, options) {
+    var _getTransactionsByCategory = function(categoryName, options) {
         var categoriesWithTransactions = {};
         var categories = [];
         var listItemObj = {
@@ -176,21 +170,14 @@ var TransactionsSingleton = (function() {
         return categoriesWithTransactions;
     };
 
-    var getBalance = function() {
+    var _getBalance = function() {
         return data.balance;
     };
 
-    var getView = function() {
-        return view;
-    };
-
-    var setView = function(part, DOMNode) {
-        if (!view.hasOwnProperty(part)) {
-            console.error('Transactions.setView : part is not defined', part);
-            return;
-        }
-
-        view[part] = DOMNode;
+    // Public Methods
+    // ===
+    var getTransactions = function() {
+        return data.transactions;
     };
 
     var showView = function() {
@@ -251,7 +238,7 @@ var TransactionsSingleton = (function() {
     // [ADF] 3: Categories List
     var buildExpensesListView = function(componentFactory, containerID) {
         var options = {showOnlyExpenses: true};
-        var categoriesWithTransactions = getTransactionsByCategory('Ledger', options);
+        var categoriesWithTransactions = _getTransactionsByCategory('Ledger', options);
         var categories = [];
 
         categoriesWithTransactions = categoriesWithTransactions
@@ -312,7 +299,7 @@ var TransactionsSingleton = (function() {
 
     // [ADF] 4: Daily Balances List
     var buildDateListView = function(componentFactory, containerID) {
-        var categoriesWithTransactions = getTransactionsByCategory('Date');
+        var categoriesWithTransactions = _getTransactionsByCategory('Date');
         var categories = [];
 
         for (var heading in categoriesWithTransactions) {
@@ -389,10 +376,7 @@ var TransactionsSingleton = (function() {
         // Transactions API
         return {
             // getters
-            getBalance: getBalance,
             getTransactions: getTransactions,
-            getTransactionsByCategory: getTransactionsByCategory,
-            getView: getView,
 
             // view builders
             buildComponent: buildComponent,
@@ -400,10 +384,7 @@ var TransactionsSingleton = (function() {
             buildExpensesListView: buildExpensesListView,
 
             // view methods
-            showView: showView,
-
-            // setters
-            setView: setView
+            showView: showView
         };
     };
 
