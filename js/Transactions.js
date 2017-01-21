@@ -62,6 +62,13 @@ var TransactionsSingleton = (function() {
         });
     };
 
+    // assumes transaction.Amount
+    var _filterExpenses = function(transactionsArray) {
+        return transactionsArray.filter(function(transaction) {
+            return transaction.Amount < 0;
+        });
+    };
+
     var _updateBalance = function() {
         if (!data.transactions) {
             return;
@@ -136,15 +143,22 @@ var TransactionsSingleton = (function() {
         return data.transactions;
     };
 
-    var getTransactionsByCategory = function(categoryName) {
+    var getTransactionsByCategory = function(categoryName, options) {
         var categoriesWithTransactions = {};
         var categories = [];
         var listItemObj = {
             id: null,
             content: ''
         };
+        var filteredTransactions = data.transactions;
 
-        data.transactions.map(function(transaction) {
+        if (typeof options !== 'undefined' && options.showOnlyExpenses) {
+            filteredTransactions = filteredTransactions.filter(function(transaction) {
+                return transaction.Amount < 0;
+            });
+        }
+
+        filteredTransactions.map(function(transaction) {
             for (heading in transaction) {
                 if (heading !== categoryName) {
                     continue;
@@ -236,8 +250,11 @@ var TransactionsSingleton = (function() {
 
     // [ADF] 3: Categories List
     var buildLedgerListView = function(componentFactory, containerID) {
-        var categoriesWithTransactions = getTransactionsByCategory('Ledger');
+        var options = {showOnlyExpenses: true};
+        var categoriesWithTransactions = getTransactionsByCategory('Ledger', options);
         var categories = [];
+
+        categoriesWithTransactions = categoriesWithTransactions
 
         for (var heading in categoriesWithTransactions) {
             // build transaction content and title for list
