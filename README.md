@@ -2,6 +2,9 @@
 
 First off, apologies for spending a bit too much time on this assignment. Through the process I learned a lot in terms of code organization and design, so hopefully you guys will enjoy what I made.
 
+# Instructions
+Download the repo and open the `index.html` file! Or visit (here)[http://bk-app.surge.sh/].
+
 # Structure
 ## HTML
 index.html : simple markup here. `c-` classes are for styling, `js-` classes are for JS bindings.
