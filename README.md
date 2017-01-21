@@ -38,3 +38,6 @@ I referred to a lot of patterns from [Addy Osmani](https://addyosmani.com/resour
 
 # Styles.txt
 - I went to the bench.co site to get my assets and match the colors/fonts to the main site. The styles I "borrowed" are noted in `style.txt`
+
+# Sources
+`String.prototype.hashCode` : thank you [ManWe](http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/)

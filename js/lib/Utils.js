@@ -8,6 +8,8 @@
                            (also precedes with - if negative amount)
 *
 * convertDateToReadable(string) : converts YYYY-MM-DD to Jan 1st, 2017
+* removeGarbageFromTitle(string) : removes words with special characters from a string,
+                                    where words are defined as separated by a space
 */
 
 var Utils = (function() {
