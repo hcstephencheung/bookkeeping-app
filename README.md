@@ -19,6 +19,11 @@ index.html : simple markup here. `c-` classes are for styling, `js-` classes are
 - Events.js : PubSub controller, mainy used for Transactions.js when all transactions are loaded.
 - Utils.js : does all the UI dirty work like ensure $ sign is after the - when a number is negative, "humanize" dates...
 
+## CSS
+app.css : 1 giant CSS, I've broken components by comments. Hopefully the `c-` classes is also indicative enough to self-explain its purpose. I thought the styling was small enough to have just 1 file. I left comments in the file to indicate where I would've broken the module styles if needed.
+
+This thing looks nice on mobile too! Win!
+
 # Additional Features:
 You can search all the implementations of the features by searching '[ADF]' in the code.
 
@@ -32,11 +37,6 @@ I referred to a lot of patterns from [Addy Osmani](https://addyosmani.com/resour
 - Factory Pattern: used to create view components
 - PubSub: used for events to handle when data load is finished
 - Singleton Pattern: used in Transactions because I want to ensure 1 source of truth for transactions. Idea behind it is if other controllers need transactions, they can be ensured of a single truth. We all want to be sane, right?
-
-## CSS
-app.css : 1 giant CSS, I've broken components by comments. Hopefully the `c-` classes is also indicative enough to self-explain its purpose. I thought the styling was small enough to have just 1 file. I left comments in the file to indicate where I would've broken the module styles if needed.
-
-This thing looks nice on mobile too! Win!
 
 # Styles.txt
 - I went to the bench.co site to get my assets and match the colors/fonts to the main site. The styles I "borrowed" are noted in `style.txt`
