@@ -14,6 +14,22 @@ body {
     box-sizing: border-box;
 }
 
+/* ================= */
+/* Arrange Component */
+/* ================= */
+
+.c-arrange {
+    display: flex;
+}
+
+.c-arrange__item {
+    flex: 1 1 100%;
+}
+
+.c-arrange__item.c--shrink {
+    flex: 2 2 100%;
+}
+
 /* ================ */
 /* Banner Component */
 /* ================ */
@@ -50,10 +66,6 @@ h2.c-banner {
     width: 100%;
 
     border-collapse: collapse;
-}
-
-.c-ledger.c--loading {
-
 }
 
 .c-ledger__head {
@@ -98,6 +110,7 @@ h2.c-banner {
 /* ============== */
 /* List Component */
 /* ============== */
+
 .c-list {
     list-style: none;
     margin: 0;
@@ -143,18 +156,4 @@ h2.c-banner {
 
 .c-list .c--red {
     color: #c7254e;
-}
-
-
-/* Arrange */
-.c-arrange {
-    display: flex;
-}
-
-.c-arrange__item {
-    flex: 1 1 100%;
-}
-
-.c-arrange__item.c--shrink {
-    flex: 2 2 100%;
 }
