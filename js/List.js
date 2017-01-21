@@ -1,5 +1,0 @@
-/*
-* Category List View
-*
-*/
-
