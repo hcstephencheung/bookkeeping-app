@@ -3,7 +3,7 @@
 First off, apologies for spending a bit too much time on this assignment. Through the process I learned a lot in terms of code organization and design, so hopefully you guys will enjoy what I made.
 
 # Instructions
-Download the repo and open the `index.html` file! Or open [this page in your browser](http://bk-app.surge.sh/). Tested only on Chrome, probably breaks on IE because I used `flexbox` to style.
+Download the repo and open the `index.html` file! Or open [this page in your browser](http://bk-app.surge.sh/). Tested on Chrome & Safari (on iPhone 6S), probably breaks on IE because I used `flexbox` to style.
 
 # Structure
 ## HTML
