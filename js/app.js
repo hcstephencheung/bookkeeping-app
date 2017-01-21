@@ -13,7 +13,7 @@ var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
 Events.addEventListener('bk-transactions-loaded', function() {
     console.debug('=== Transactions data loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
     transactionsInstance.buildComponent(componentFactory, 'js-transactions');
-    transactionsInstance.buildExpensesListView(componentFactory, 'js-category-list').done(function() {
+    transactionsInstance.buildExpensesListView(componentFactory, 'js-expenses-list').done(function() {
         console.debug('=== Expenses list loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
     });
     transactionsInstance.buildDateListView(componentFactory, 'js-date-list').done(function() {
