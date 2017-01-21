@@ -12,22 +12,18 @@
         </header>
 
         <main>
+            <section class="c-card" id="js-transactions">
+                <!-- Transactions table -->
+            </section>
+
             <section class="c-card">
-                <table id="js-transactions" class="c-ledger">
-                    <thead id="js-transactions__head" class="c-ledger__head">
-                        <tr class="c-ledger__row">
-                            <th> Date </th>
-                            <th> Company </th>
-                            <th> Account </th>
-                            <th id="js-transactions__balance"> Balance </th>
-                        </tr>
-                    </thead>
-                    <tbody id="js-transactions__ledger-table-body" class="c-ledger__body c--loading">
-                        <tr class="c-ledger__row">
-                            <td colspan="4" class="c-ledger__column"> Loading... </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2 class="c-banner"> Expenses </h2>
+                <div id="js-expenses-list"></div>
+            </section>
+
+            <section class="c-card">
+                <h2 class="c-banner"> Daily Balances </h2>
+                <div id="js-date-list"></div>
             </section>
         </main>
 

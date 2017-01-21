@@ -1,25 +1,23 @@
 // Book Keeping app
 var ENDPOINT = 'http://resttest.bench.co/transactions/';
+// Track load times just for fun
+var APP_START_TIME = new Date();
 
 // RunnerJS
 DataBridge.init();
-// Transactions init
-var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
-transactionsInstance.setView('container', document.getElementById('js-transactions'));
-transactionsInstance.setView('head', document.getElementById('js-transactions__head'));
-transactionsInstance.setView('balance', document.getElementById('js-transactions__balance'));
 // Component init
 var componentFactory = new ComponentFactory();
+// Transactions init
+var transactionsInstance = TransactionsSingleton.create(ENDPOINT);
 
-var loadedTime = new Date();
 Events.addEventListener('bk-transactions-loaded', function() {
-    console.log('=== Loaded in ' + (new Date() - loadedTime) + ' ms ===');
-
-    transactionsInstance.setView('body', componentFactory.createComponent({
-        template: 'LedgerComponent',
-        container: 'js-transactions__ledger-table-body',
-        data: transactionsInstance.getTransactions()
-    }));
-
-    transactionsInstance.showView();
+    console.debug('=== Transactions data loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
+    transactionsInstance.buildComponent(componentFactory, 'js-transactions');
+    transactionsInstance.buildExpensesListView(componentFactory, 'js-expenses-list').done(function() {
+        console.debug('=== Expenses list loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
+    });
+    transactionsInstance.buildDateListView(componentFactory, 'js-date-list').done(function() {
+        console.debug('=== Daily balances list loaded in ' + (new Date() - APP_START_TIME) + ' ms ===');
+    });
 });
+

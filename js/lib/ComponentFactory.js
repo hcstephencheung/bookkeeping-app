@@ -1,30 +1,50 @@
 /*
 * Component Factory
 * Creates new view components where the template is specified in a Components object
+* TODO: Needs Refactoring on component creation
 * ===
 * API
 * ===
 * ComponentFactory.create(options) : DOMNode of component
 * where options is object { template: 'nameOfComponent', container: 'idOfWrapper', data: dataOfComponent }
 */
-var Components = {
-    LedgerComponent: function(destinationContainer, data) {
-        var containerEl = document.getElementById(destinationContainer);
-
-        if (!containerEl) {
-            console.error('LedgerComponent Error: Container id incorrect', destinationContainer);
-            return;
-        }
-
-        if (!data) {
-            console.warn('LedgerComponent Warning: Data is ', data);
-            return
-        }
-
+var ComponentsMap = {
+    // Table Component
+    // ---
+    TableComponent: function(containerEl, tableData) {
         // clear for new data
         containerEl.innerHTML= '';
 
-        data.forEach(function(rowData) {
+        var tableEl = document.createElement('div');
+
+        tableEl.innerHTML =
+            '<table class="c-ledger">' +
+            '<thead id="' + tableData.theadId + '" class="c-ledger__head">' +
+            '<tr class="c-ledger__row">' +
+            '<th> Date </th>' +
+            '<th> Company </th>' +
+            '<th> Account </th>' +
+            '<th id="' + tableData.balanceId + '"> Balance </th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody id="' + tableData.tbodyId + '" class="c-ledger__body c--loading">' +
+            '<tr class="c-ledger__row">' +
+            '<td colspan="4" class="c-ledger__column"> Loading... </td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>';
+
+        containerEl.appendChild(tableEl.firstChild);
+
+        return containerEl;
+    },
+    // Ledger Component
+    // ---
+    LedgerComponent: function(containerEl, ledgerData) {
+        // clear for new data
+        containerEl.innerHTML= '';
+
+        ledgerData.forEach(function(rowData) {
             var rowEl = document.createElement('tbody');
             rowEl.innerHTML =
                 '<tr class="c-ledger__row">' +
@@ -39,10 +59,82 @@ var Components = {
         });
 
         return containerEl;
+    },
+    // List Component
+    // ---
+    ListComponent: function(containerEl, listData) {
+        var listEl = document.createElement('ul');
+        listEl.classList.add('c-list');
+
+        listData.forEach(function(listItemData) {
+            if (listItemData === undefined) {
+                return;
+            }
+
+            var listItemEl = document.createElement('div'); // wrapper div
+
+            if (typeof listItemData.balance !== 'undefined') {
+                listItemEl.innerHTML =
+                    '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
+                    '<div class="c-list__item-heading c-arrange">' +
+                    '<p class="c-arrange__item">' + listItemData.content + '</p>' +
+                    '<span class="c-list__note c-arrange__item c--shrink c--' + listItemData.balance.modifier + '">' + listItemData.balance.amount + '</span>' +
+                    '</div>' +
+                    '</li>';
+            } else {
+                listItemEl.innerHTML =
+                    '<li id="' + listItemData.id + '"' + 'class="c-list__item">' +
+                    '<div class="c-list__item-heading c-arrange">' +
+                    '<p class="c-arrange__item">' + listItemData.content + '</p>' +
+                    '</div>' +
+                    '</li>';
+            }
+            
+
+            listEl.appendChild(listItemEl.firstChild);
+        });
+
+        containerEl.appendChild(listEl);
+
+        return containerEl;
     }
+};
+
+function Component(templateName, destinationContainer, data) {
+    var containerEl = document.getElementById(destinationContainer);
+    var component = this;
+
+    if (!containerEl) {
+        console.error('LedgerComponent Error: Container id incorrect', destinationContainer);
+        return;
+    }
+
+    if (!data) {
+        console.warn('LedgerComponent Warning: Data is ', data);
+        return;
+    }
+
+    component.el = ComponentsMap[templateName](containerEl, data);
+    console.debug('=== ' + templateName + ' has loaded ===');
+
+    return component;
+};
+
+Component.prototype.done = function(postRenderCb) {
+    var component = this;
+    if (!component.el) {
+        console.error('Component creation failed');
+        return false;
+    }
+
+    if (typeof postRenderCb === 'function') {
+        postRenderCb(component.el);
+    }
+
+    return component;
 };
 
 function ComponentFactory() {};
 ComponentFactory.prototype.createComponent = function(component) {
-    return new Components[component.template](component.container, component.data);
+    return new Component(component.template, component.container, component.data);
 };
